@@ -41,6 +41,13 @@ public class YatzeeTest {
         assertEquals(30, getScore(Category.SIXES, new int[]{6,6,6,6,6}));
     }
 
+    @Test
+    void shouldCalculateForPairs(){
+        assertEquals(6, getScore(Category.PAIR, new int[]{2,4,6,3,3}));
+        assertEquals(10, getScore(Category.PAIR, new int[]{1,1,5,5,6}));
+        assertEquals(12, getScore(Category.PAIR, new int[]{3,2,2,6,6}));
+    }
+
     public int getScore(Category category, int[] rolls){
         int score = 0;
         int[] count = diceCounter(rolls); //Keeps track of how many die per value
@@ -53,6 +60,9 @@ public class YatzeeTest {
             case FIVES: return count[4]*5;
             case SIXES: return count[5]*6;
             case PAIR:
+                for (int i = 5; i >= 0; i--){
+                    if(count[i] >= 2){ return count[i]*(i+1); }
+                }
 
             default:
                 System.err.println("Error: No category was selected");
