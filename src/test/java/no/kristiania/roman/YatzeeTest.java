@@ -47,14 +47,14 @@ public class YatzeeTest {
         assertEquals(10, getScore(Category.PAIR, new int[]{1,1,5,5,6}));
         assertEquals(12, getScore(Category.PAIR, new int[]{3,2,2,6,6}));
     }
-/*
+
     @Test
     void shouldCalculateForTwoPairs(){
         assertEquals(6,getScore(Category.TWOPAIR, new int[]{1,1,2,2,3}));
         assertEquals(0,getScore(Category.TWOPAIR, new int[]{1,2,2,2,3}));
-        assertEquals(22,getScore(Category.TWOPAIR, new int[]{2,2,6,6,6}));
+        assertEquals(16,getScore(Category.TWOPAIR, new int[]{2,2,6,6,6}));
     }
-*/
+
     @Test
     void shouldCalculateForThreeOfKind(){
         assertEquals(3,getScore(Category.THREEOFKIND, new int[]{1,1,1,2,3}));
@@ -66,13 +66,13 @@ public class YatzeeTest {
         assertEquals(0,getScore(Category.FOUROFKIND, new int[]{1,1,1,2,3}));
         assertEquals(8,getScore(Category.FOUROFKIND, new int[]{2,2,2,2,3}));
     }
-    /*
+
     @Test
     void shouldCalculateForFullHouse(){
-        assertEquals(0,getScore(Category.FULLHOUSE, new int[]{1,1,1,2,3}));
-        assertEquals(8,getScore(Category.FULLHOUSE, new int[]{2,2,2,2,3}));
+        assertEquals(25,getScore(Category.FULLHOUSE, new int[]{1,1,1,2,2}));
+        assertEquals(0,getScore(Category.FULLHOUSE, new int[]{6,2,2,2,3}));
     }
-    */
+
     @Test
     void shouldCalculateForSmallStraight(){
         assertEquals(30,getScore(Category.SMALLSTRAIGHT, new int[]{3,2,1,4,5}));
@@ -98,7 +98,7 @@ public class YatzeeTest {
     }
 
     public int getScore(Category category, int[] rolls){
-        int[] count = diceCounter(rolls); //Keeps track of how many die per value
+        int[] count = diceCounter(rolls); //Keeps track of how many of each dice are thrown. Die value = index + 1
 
         switch (category){
             case ONES: return count[0];
@@ -108,10 +108,10 @@ public class YatzeeTest {
             case FIVES: return count[4]*5;
             case SIXES: return count[5]*6;
             case PAIR: return ofKind(2,count);
-            case TWOPAIR: return 0; //TODO: Do this
+            case TWOPAIR: return ofKindTwo(2,2, count);
             case THREEOFKIND: return ofKind(3,count);
             case FOUROFKIND: return ofKind(4,count);
-            case FULLHOUSE: return 0; //TODO: Do this
+            case FULLHOUSE: return ofKindTwo(2,3, count) > 0 ? 25 : 0;
             case SMALLSTRAIGHT: return count[0] == 1 && count[1] == 1 && count[2] == 1 && count[3] == 1 && count[4] == 1 ? 30 : 0;
             case LARGESTRAIGHT: return count[1] == 1 && count[2] == 1 && count[3] == 1 && count[4] == 1 && count[5] == 1 ? 40 : 0;
             case CHANCE: return rolls[0] + rolls[1] + rolls[2] + rolls[3] + rolls[4];
@@ -120,6 +120,21 @@ public class YatzeeTest {
                 System.err.println("Error: No category was selected");
                 return 0;
         }
+    }
+
+    //Method takes in a required amount of same roll die TWICE, if both are not met it gives 0.
+    private int ofKindTwo(int amountA, int amountB, int[] count){
+        for(int i = 5; i >= 0; i--){
+            if(count[i] >= amountA){
+                for(int j = 5; j >= 0; j--){
+                    if(j == i) continue; //Skip checking the same value
+                    if(count[j] >= amountB){
+                        return (amountA*(i+1)) + (amountB*(j+1));
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     //Method takes in a required amount of same roll die, if nothing is met gives 0.
