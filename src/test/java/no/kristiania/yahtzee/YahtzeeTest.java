@@ -1,4 +1,4 @@
-package no.kristiania.roman;
+package no.kristiania.yahtzee;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
