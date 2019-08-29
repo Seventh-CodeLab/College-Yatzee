@@ -2,8 +2,9 @@ package no.kristiania.yahtzee;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class YahtzeeTest {
+//Test File
 
+class YahtzeeTest {
     @Test
     void shouldCalculateForOnes(){
         assertEquals(0, Yahtzee.getScore(Category.ONES, new int[]{2,3,4,5,6}));

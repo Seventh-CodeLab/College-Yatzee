@@ -1,7 +1,9 @@
 package no.kristiania.yahtzee;
 
-public class Yahtzee {
-    public static int getScore(Category category, int[] rolls){
+//Production File
+
+class Yahtzee {
+    static int getScore(Category category, int[] rolls){
         int[] count = diceCounter(rolls); //Keeps track of how many of each dice are thrown. Die value = index + 1
 
         switch (category){
