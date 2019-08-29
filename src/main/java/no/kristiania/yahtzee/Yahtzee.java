@@ -66,7 +66,7 @@ class Yahtzee {
     //Checks if frequencies match prerequisites for a Small Straight (1,2,3,4,5);
     private static boolean isSmallStraight(int[] dieFrequency){
         for(int dieValue = 1; dieValue <= 5; dieValue++){
-            if(dieFrequency[dieValue] != 1) return false;
+            if(dieFrequency[dieValue] == 0) return false;
         }
         return true;
     }
@@ -74,7 +74,7 @@ class Yahtzee {
     //Checks if frequencies match prerequisites for a Large Straight (2,3,4,5,6);
     private static boolean isLargeStraight(int[] dieFrequency){
         for(int dieValue = 2; dieValue <= 6; dieValue++){
-            if(dieFrequency[dieValue] != 1) return false;
+            if(dieFrequency[dieValue] == 0) return false;
         }
         return true;
     }
