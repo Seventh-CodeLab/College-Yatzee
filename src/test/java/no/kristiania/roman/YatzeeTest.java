@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class YatzeeTest {
 
     enum Category{
-        ONES, TWOS, THREES, FOURS, FIVES, SIXES, PAIR, TWOPAIR, THREEOFKIND, FOUROFKIND, FULLHOUSE, SMALLSTRAIGHT, LARGESTRAIGHT, CHANCE, YATZY
+        ONES, TWOS, THREES, FOURS, FIVES, SIXES, PAIR, TWOPAIR, THREEOFKIND, FOUROFKIND, FULLHOUSE, SMALLSTRAIGHT, LARGESTRAIGHT, CHANCE, YAHTZEE
     }
 
     @Test
@@ -47,9 +47,57 @@ public class YatzeeTest {
         assertEquals(10, getScore(Category.PAIR, new int[]{1,1,5,5,6}));
         assertEquals(12, getScore(Category.PAIR, new int[]{3,2,2,6,6}));
     }
+/*
+    @Test
+    void shouldCalculateForTwoPairs(){
+        assertEquals(6,getScore(Category.TWOPAIR, new int[]{1,1,2,2,3}));
+        assertEquals(0,getScore(Category.TWOPAIR, new int[]{1,2,2,2,3}));
+        assertEquals(22,getScore(Category.TWOPAIR, new int[]{2,2,6,6,6}));
+    }
+*/
+    @Test
+    void shouldCalculateForThreeOfKind(){
+        assertEquals(3,getScore(Category.THREEOFKIND, new int[]{1,1,1,2,3}));
+        assertEquals(6,getScore(Category.THREEOFKIND, new int[]{2,2,2,2,3}));
+    }
+
+    @Test
+    void shouldCalculateForFourOfKind(){
+        assertEquals(0,getScore(Category.FOUROFKIND, new int[]{1,1,1,2,3}));
+        assertEquals(8,getScore(Category.FOUROFKIND, new int[]{2,2,2,2,3}));
+    }
+    /*
+    @Test
+    void shouldCalculateForFullHouse(){
+        assertEquals(0,getScore(Category.FULLHOUSE, new int[]{1,1,1,2,3}));
+        assertEquals(8,getScore(Category.FULLHOUSE, new int[]{2,2,2,2,3}));
+    }
+    */
+    @Test
+    void shouldCalculateForSmallStraight(){
+        assertEquals(30,getScore(Category.SMALLSTRAIGHT, new int[]{3,2,1,4,5}));
+        assertEquals(0,getScore(Category.SMALLSTRAIGHT, new int[]{2,4,3,5,6}));
+    }
+
+    @Test
+    void shouldCalculateForLargeStraight(){
+        assertEquals(40,getScore(Category.LARGESTRAIGHT, new int[]{2,4,5,6,3}));
+        assertEquals(0,getScore(Category.LARGESTRAIGHT, new int[]{2,1,5,5,3}));
+    }
+
+    @Test
+    void shouldCalculateForChance(){
+        assertEquals(15,getScore(Category.CHANCE, new int[]{1,4,2,6,2}));
+        assertEquals(18,getScore(Category.CHANCE, new int[]{4,4,2,2,6}));
+    }
+
+    @Test
+    void shouldCalculateForYahtzee(){
+        assertEquals(50,getScore(Category.YAHTZEE, new int[]{1,1,1,1,1}));
+        assertEquals(0,getScore(Category.YAHTZEE, new int[]{2,2,2,2,3}));
+    }
 
     public int getScore(Category category, int[] rolls){
-        int score = 0;
         int[] count = diceCounter(rolls); //Keeps track of how many die per value
 
         switch (category){
@@ -59,17 +107,29 @@ public class YatzeeTest {
             case FOURS: return count[3]*4;
             case FIVES: return count[4]*5;
             case SIXES: return count[5]*6;
-            case PAIR:
-                for (int i = 5; i >= 0; i--){
-                    if(count[i] >= 2){ return count[i]*(i+1); }
-                }
-
+            case PAIR: return ofKind(2,count);
+            case TWOPAIR: return 0; //TODO: Do this
+            case THREEOFKIND: return ofKind(3,count);
+            case FOUROFKIND: return ofKind(4,count);
+            case FULLHOUSE: return 0; //TODO: Do this
+            case SMALLSTRAIGHT: return count[0] == 1 && count[1] == 1 && count[2] == 1 && count[3] == 1 && count[4] == 1 ? 30 : 0;
+            case LARGESTRAIGHT: return count[1] == 1 && count[2] == 1 && count[3] == 1 && count[4] == 1 && count[5] == 1 ? 40 : 0;
+            case CHANCE: return rolls[0] + rolls[1] + rolls[2] + rolls[3] + rolls[4];
+            case YAHTZEE: return ofKind(5,count) > 0 ? 50 : 0;
             default:
                 System.err.println("Error: No category was selected");
-                break;
+                return 0;
         }
+    }
 
-        return score;
+    //Method takes in a required amount of same roll die, if nothing is met gives 0.
+    private int ofKind(int amount, int[] count){
+        for(int i = 5; i >= 0; i--){
+            if(count[i] >= amount){
+                return amount*(i+1);
+            }
+        }
+        return 0;
     }
 
     //Method takes rolls and counts them, returns amount of select roles in array.
