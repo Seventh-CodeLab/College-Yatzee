@@ -28,6 +28,16 @@ class Yahtzee {
         }
     }
 
+    /* //This code block can be used to generate random rolls
+    static int[] rollDie(){
+        int[] rolls = new int[5];
+        for(int roll = 0; roll <= 5; roll++){
+            rolls[roll] = (int)(Math.random() * 6) + 1;
+        }
+        return rolls;
+    }
+    */
+
     //Method takes in a required amount of same roll die, if nothing is met gives 0.
     private static int findOfKind(int requiredDice, int[] dieFrequency){
         for(int dieValue = 6; dieValue > 0; dieValue--){
